@@ -7,7 +7,6 @@ channels:
 dependencies:
   - pytorch
   - torchvision
-  - cudatoolkit=9.2
   - torchaudio
   - numpy
   - pysoundfile

@@ -189,7 +189,7 @@ def get_speaker_data(path_dir, list_metadata, pathWav):
                 continue
 
             info = torchaudio.info(locPath)
-            size = (info[0].length / info[0].rate) / 3600
+            size = (info.num_frames / info.sample_rate) / 3600
 
             speakers = speakerData['readers'][index]
 
@@ -226,8 +226,8 @@ def get_speaker_hours_data(list_metadata, audio_extension):
 
         path_audio_data = os.path.splitext(pathMetadata)[0] + audio_extension
 
-        info = torchaudio.info(path_audio_data)[0]
-        totAudio = info.length / (info.rate * 3600.)
+        info = torchaudio.info(path_audio_data)
+        totAudio = info.num_frames / (info.sample_rate * 3600.)
 
         if speaker_name is None:
             speaker_name = 'null'
@@ -260,8 +260,8 @@ def get_hour_tag_repartition(list_metadata, tagName,
 
         path_audio_data = os.path.splitext(pathMetadata)[0] + audio_extension
 
-        info = torchaudio.info(path_audio_data)[0]
-        totAudio = info.length / (info.rate * 3600.)
+        info = torchaudio.info(path_audio_data)
+        totAudio = info.num_frames / (info.sample_rate * 3600.)
 
         if value is None:
             value = 'null'
