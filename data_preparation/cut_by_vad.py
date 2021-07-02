@@ -74,9 +74,14 @@ def cut(input_dir,
 
     tasks = [(path_book, output_dir, target_len_sec, out_extension) for path_book in list_dir]
 
-    with multiprocessing.Pool(processes=n_process) as pool:
-        for _ in tqdm.tqdm(pool.imap_unordered(cut_book, tasks), total=len(tasks)):
-            pass
+    if n_process > 1:
+        with multiprocessing.Pool(processes=n_process) as pool:
+            for _ in tqdm.tqdm(pool.imap_unordered(cut_book, tasks), total=len(tasks)):
+                pass
+
+    else:
+        for task in tqdm.tqdm(tasks):
+            cut_book(task)
 
 
 def parse_args():
