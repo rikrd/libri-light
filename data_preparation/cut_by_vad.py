@@ -12,14 +12,11 @@ def save(seq, fname, index, extension):
     file_name = fname.parent / (fname.stem + f"_{index:04}{extension}")
     fname.parent.mkdir(exist_ok=True, parents=True)
 
-    print(f'Writing {file_name} ...')
-
-    sf.write(file_name, output, samplerate=16000)
+    sf.write(file_name.as_posix(), output, samplerate=16000)
 
 
 def cut_sequence(path, vad, path_out, target_len_sec, out_extension):
-    print(f'Reading {path} ...')
-    data, samplerate = sf.read(path)
+    data, samplerate = sf.read(path.as_posix())
 
     assert len(data.shape) == 1
     assert samplerate == 16000
@@ -52,9 +49,11 @@ def cut_book(task):
 
     speaker = pathlib.Path(path_book.parent.name)
 
-    for i, meta_file_path in enumerate(path_book.glob('*.json')):
+    print(path_book)
+    for i, meta_file_path in enumerate(path_book.glob('**/*.json')):
         with open(meta_file_path, 'r') as f:
             meta = json.loads(f.read())
+
         book_id = meta['book_meta']['id']
         vad = meta['voice_activity']
 
@@ -78,14 +77,9 @@ def cut(input_dir,
 
     tasks = [(path_book, output_dir, target_len_sec, out_extension) for path_book in list_dir]
 
-    if n_process > 1:
-        with multiprocessing.Pool(processes=n_process) as pool:
-            for _ in tqdm.tqdm(pool.imap_unordered(cut_book, tasks), total=len(tasks)):
-                pass
-
-    else:
-        for task in tqdm.tqdm(tasks):
-            cut_book(task)
+    with multiprocessing.Pool(processes=n_process) as pool:
+        for _ in tqdm.tqdm(pool.imap_unordered(cut_book, tasks), total=len(tasks)):
+            pass
 
 
 def parse_args():
