@@ -49,7 +49,6 @@ def cut_book(task):
 
     speaker = pathlib.Path(path_book.parent.name)
 
-    print(path_book)
     for i, meta_file_path in enumerate(path_book.glob('**/*.json')):
         with open(meta_file_path, 'r') as f:
             meta = json.loads(f.read())
