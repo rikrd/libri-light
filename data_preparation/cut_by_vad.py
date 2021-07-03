@@ -11,10 +11,14 @@ def save(seq, fname, index, extension):
     output = np.hstack(seq)
     file_name = fname.parent / (fname.stem + f"_{index:04}{extension}")
     fname.parent.mkdir(exist_ok=True, parents=True)
+
+    print(f'Writing {file_name} ...')
+
     sf.write(file_name, output, samplerate=16000)
 
 
 def cut_sequence(path, vad, path_out, target_len_sec, out_extension):
+    print(f'Reading {path} ...')
     data, samplerate = sf.read(path)
 
     assert len(data.shape) == 1
